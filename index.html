@@ -16,13 +16,13 @@
 
             // 1. 背景（ダークグラデーション）
             const grad = ctx.createLinearGradient(0, 0, 512, 512);
-            grad.addColorStop(0, '#181b22');
-            grad.addColorStop(1, '#0f1115');
+            grad.addColorStop(0, '#17171a');
+            grad.addColorStop(1, '#000000');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 512, 512);
 
             // 2. 外枠のアクセントリング
-            ctx.strokeStyle = 'rgba(59, 130, 246, 0.35)';
+            ctx.strokeStyle = 'rgba(210, 255, 40, 0.40)';
             ctx.lineWidth = 16;
             ctx.strokeRect(24, 24, 464, 464);
 
@@ -32,8 +32,8 @@
             ctx.rotate(-Math.PI / 4);
 
             const accentGrad = ctx.createLinearGradient(-160, 0, 160, 0);
-            accentGrad.addColorStop(0, '#60a5fa');
-            accentGrad.addColorStop(1, '#2563eb');
+            accentGrad.addColorStop(0, '#e4ff70');
+            accentGrad.addColorStop(1, '#a8d81e');
             ctx.fillStyle = accentGrad;
 
             // シャフト（中央のバー）
@@ -49,7 +49,7 @@
             ctx.restore();
 
             // 4. 下部に「WORKOUT」テキスト
-            ctx.fillStyle = '#f59e0b';
+            ctx.fillStyle = '#ffb800';
             ctx.font = 'bold 46px -apple-system, BlinkMacSystemFont, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('WORKOUT', 256, 435);
@@ -64,17 +64,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-color: #0f1115;
-            --card-bg: #181b22;
-            --card-hover: #212631;
-            --text-main: #f0f3f6;
-            --text-sub: #8b949e;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --border: #2d333b;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --gold: #f59e0b;
+            --bg-color: #000000;
+            --card-bg: #141416;
+            --card-hover: #26262b;
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
+            --accent: #d2ff28;
+            --accent-hover: #b8e62e;
+            --border: #26262b;
+            --danger: #ff453a;
+            --success: #30d158;
+            --gold: #ffb800;
         }
         * {
             box-sizing: border-box;
@@ -803,6 +803,62 @@
         .login-sub { font-size: 0.82rem; color: var(--text-sub); text-align: center; margin: 0 0 6px; line-height: 1.5; }
         .login-error { color: var(--danger); font-size: 0.82rem; min-height: 1em; text-align: center; }
     </style>
+
+    <style id="kinetic-theme">
+        /* ===== 案2 Kinetic Club 上書きテーマ（プレビュー） ===== */
+        header { background: #000000; border-bottom: none; }
+        .sound-test-btn { background: #1f1f23; border: none; color: var(--text-sub); border-radius: 999px; padding: 6px 12px; }
+        .date-badge { background: #1f1f23; color: #ffffff; border-radius: 999px; font-weight: 700; }
+        .card { border: none; box-shadow: none; border-radius: 28px; padding: 20px 18px; }
+        .stat-card { border: none; box-shadow: none; border-radius: 24px; }
+        .stat-value { font-weight: 800; }
+        .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; }
+        .category-scroll { gap: 7px; }
+        .cat-btn { background: #1f1f23; border: none; color: #c7c7cc; border-radius: 999px; font-weight: 700; padding: 8px 15px; }
+        .cat-btn.active { background: #ffffff; color: #000000; border: none; }
+        .select-box { background-color: #1f1f23; border: none; border-radius: 16px; font-weight: 700; }
+        .prev-info-bar { background: rgba(210, 255, 40, 0.08); border: none; border-radius: 14px; }
+        .input-display { font-size: 4.1rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+        .input-display.swiping { background-color: rgba(210, 255, 40, 0.12); }
+        .input-display .unit { font-size: 1.1rem; font-weight: 800; color: var(--text-sub); }
+        .swipe-hint { letter-spacing: 0.05em; }
+        .btn-row { gap: 10px; }
+        .adjust-btn { background: #1f1f23; border: none; border-radius: 999px; }
+        .adjust-btn:active { background: #333339; }
+        .main-adjust { background: #26262b; font-size: 1.35rem; padding: 14px 0; }
+        .timer-btn { background: #1f1f23; border: none; border-radius: 999px; font-weight: 700; padding: 9px 0; }
+        .timer-btn.active { background: var(--accent); color: #000000; border: none; }
+        .record-exec-btn { background: var(--accent); color: #000000; border-radius: 999px; font-weight: 800; box-shadow: none; padding: 18px 12px; }
+        .record-exec-btn:active { background: var(--accent-hover); }
+        .record-skip-btn { background: #1f1f23; border: none; border-radius: 24px; }
+        .record-skip-btn:active { background: #26262b; border: none; }
+        .set-item-card { background: #1f1f23; border: none; border-radius: 14px; }
+        .action-icon-btn { background: #26262b; border: none; color: #e5e5ea; border-radius: 999px; }
+        .action-icon-btn.accent { color: var(--accent); border: none; }
+        .action-icon-btn.danger { color: var(--danger); border: none; }
+        .summary-banner-btn { background: var(--gold); color: #000000; box-shadow: none; border-radius: 999px; }
+        .floating-timer-bar { background: rgba(0, 0, 0, 0.94); border: 2px solid var(--accent); border-radius: 999px; box-shadow: none; }
+        .floating-timer-bar.alarm { border-color: var(--gold); background: rgba(255, 184, 0, 0.20); }
+        .ft-btn { background: #26262b; border: none; border-radius: 999px; }
+        .ft-btn.stop { color: var(--danger); border: none; }
+        #floatingTimeLeft { color: var(--accent) !important; font-weight: 900; }
+        .cal-date { background: var(--card-bg); border-radius: 14px; }
+        .cal-date.has-record { background: rgba(210, 255, 40, 0.14); border-color: transparent; }
+        .cal-date.today-mark { border-color: var(--gold); }
+        .cal-date.selected { background: var(--accent); color: #000000; }
+        .cal-date.selected .cal-dot { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7); }
+        .cal-legend { border-top: none; }
+        .search-input { background-color: var(--card-bg); border: none; border-radius: 999px; }
+        .add-ex-btn { background: var(--accent); color: #000000; border-radius: 999px; }
+        .exercise-row { border: none; border-radius: 20px; }
+        .modal-content { border-top: none; border-radius: 28px 28px 0 0; }
+        .form-input { background: #1f1f23; border: none; border-radius: 14px; }
+        .close-modal { background: #26262b; }
+        .pr-badge { border-radius: 999px; padding: 2px 8px; }
+        .toast { background: var(--gold); color: #000000; box-shadow: 0 8px 20px rgba(0,0,0,0.45); }
+        .nav-bar { background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: none; }
+        .login-card { border: none; border-radius: 28px; }
+    </style>
 </head>
 <body>
 
@@ -1195,14 +1251,14 @@
          * 1. 種目マスター初期データ ＆ 部位別カラー定義
          ******************************************************************/
         const CATEGORY_COLORS = {
-            '胸': '#ef4444',
-            '背中': '#3b82f6',
-            '肩': '#f97316',
-            '腕': '#06b6d4',
-            '脚': '#a855f7',
-            'お尻': '#ec4899',
-            '腹筋': '#eab308',
-            '有酸素': '#10b981'
+            '胸': '#ff3b30',
+            '背中': '#00f5d4',
+            '肩': '#bf5af2',
+            '腕': '#ff9f0a',
+            '脚': '#32ade6',
+            'お尻': '#ff6482',
+            '腹筋': '#ffd60a',
+            '有酸素': '#30d158'
         };
 
         const initialExercises = [
@@ -2476,7 +2532,7 @@
                 }
             });
             const dots = seenCats.slice(0, 4).map(cat => {
-                const color = CATEGORY_COLORS[cat] || '#3b82f6';
+                const color = CATEGORY_COLORS[cat] || '#d2ff28';
                 return `<span class="cal-dot" style="background-color: ${color};" title="${cat}"></span>`;
             }).join('');
             return `<div class="cal-dots">${dots}</div>`;
@@ -2809,16 +2865,16 @@
 
             const polyLine = coords.map(c => `${c.x},${c.y}`).join(' ');
             const dotsHtml = coords.map(c => `
-                <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#3b82f6" stroke="#181b22" stroke-width="2"/>
-                <text x="${c.x}" y="${c.y - 9}" fill="#f0f3f6" font-size="11" font-weight="bold" text-anchor="middle">${c.val}kg</text>
-                <text x="${c.x}" y="${h - 6}" fill="#8b949e" font-size="10" text-anchor="middle">${c.dateLabel}</text>
+                <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#d2ff28" stroke="#000000" stroke-width="2"/>
+                <text x="${c.x}" y="${c.y - 9}" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">${c.val}kg</text>
+                <text x="${c.x}" y="${h - 6}" fill="#8e8e93" font-size="10" text-anchor="middle">${c.dateLabel}</text>
             `).join('');
 
             container.innerHTML = `
                 <svg viewBox="0 0 ${w} ${h}" style="width:100%; height:100%; overflow:visible;">
-                    <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#2d333b" stroke-dasharray="3"/>
-                    <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#2d333b"/>
-                    ${coords.length > 1 ? `<polyline fill="none" stroke="#3b82f6" stroke-width="3" points="${polyLine}"/>` : ''}
+                    <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#26262b" stroke-dasharray="3"/>
+                    <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#26262b"/>
+                    ${coords.length > 1 ? `<polyline fill="none" stroke="#d2ff28" stroke-width="3" points="${polyLine}"/>` : ''}
                     ${dotsHtml}
                 </svg>
             `;
