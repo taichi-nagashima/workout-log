@@ -1192,7 +1192,6 @@
     </style>
     <style id="senior-simplify-css">
         /* シンプルテーマでは記録のコア以外を隠す（機能自体は残り、テーマを戻せば復活） */
-        html[data-theme="senior"] .record-action-row .record-skip-btn { display: none !important; }
         html[data-theme="senior"] button[onclick="openCurrentExerciseChart()"] { display: none !important; }
         html[data-theme="senior"] button[onclick="openAddExerciseModal()"] { display: none !important; }
         html[data-theme="senior"] button[onclick="resetSetCount()"] { display: none !important; }
@@ -1226,6 +1225,13 @@
         html[data-theme="senior"] .floating-timer-bar .ft-btn { font-size: 1rem; }
         html[data-theme="senior"] .floating-timer-bar .ft-btn.stop { font-size: 1.12rem; }
         html[data-theme="senior"] .fav-btn { font-size: 1.5rem; }
+    </style>
+    <style id="unit-toggle-css">
+        /* 重量セクションの kg/lb トグル（設定画面の単位切替と data-unit-opt で連動） */
+        .unit-toggle { display: inline-flex; border: 1.5px solid var(--border-color, #ccc); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+        .unit-toggle button { border: none; background: transparent; color: var(--text-sub); font-size: 0.82rem; font-weight: 700; padding: 5px 13px; min-height: 32px; cursor: pointer; line-height: 1; }
+        .unit-toggle button.selected { background: var(--text-main); color: var(--card-bg); }
+        html[data-theme="senior"] .unit-toggle button { font-size: 0.95rem; padding: 7px 15px; }
     </style>
     <style id="editorial-plain-css">
         /* Editorialをプレーンに: 細い文字を太く、装飾(透明背景・破線)を通常の面に（ユーザー指摘 2026-11-20） */
@@ -1439,7 +1445,10 @@
             <!-- 重量入力 -->
             <div class="card">
                 <div class="input-group">
-                    <span class="section-label"><span id="weightSectionLabel">重量 (WEIGHT)</span><span class="swipe-hint">⇄ 左右スワイプで調整</span></span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span class="section-label" style="margin-bottom:0;"><span id="weightSectionLabel">重量 (WEIGHT)</span><span class="swipe-hint">⇄ 左右スワイプで調整</span></span>
+                        <span class="unit-toggle" role="group" aria-label="重量の単位"><button type="button" data-unit-opt="kg" onclick="setUnit('kg')">kg</button><button type="button" data-unit-opt="lb" onclick="setUnit('lb')">lb</button></span>
+                    </div>
                     <button class="action-icon-btn" id="plateCalcBtn" onclick="openPlateCalc()" style="margin-bottom:8px;">🏋️ プレート計算</button>
                     <div class="input-display" id="weightSwipeArea" title="左右にスワイプで1kgずつ増減">
                         <span id="weightValue">40</span><span class="unit" id="weightUnitLabel">kg</span>
