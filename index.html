@@ -1226,6 +1226,12 @@
         html[data-theme="senior"] .floating-timer-bar .ft-btn.stop { font-size: 1.12rem; }
         html[data-theme="senior"] .fav-btn { font-size: 1.5rem; }
     </style>
+    <style id="senior-record-fix-css">
+        /* シンプル版: 記録ボタン行を縦積みにして横はみ出しを防ぐ（2026-11-22 即記録追加に伴う修正） */
+        html[data-theme="senior"] .record-action-row { flex-direction: column; }
+        html[data-theme="senior"] .record-action-row .record-exec-btn { width: 100%; }
+        html[data-theme="senior"] .record-action-row .record-skip-btn { flex-direction: row; gap: 8px; width: 100%; padding: 13px 14px; }
+    </style>
     <style id="unit-toggle-css">
         /* 重量セクションの kg/lb トグル（設定画面の単位切替と data-unit-opt で連動） */
         .unit-toggle { display: inline-flex; border: 1.5px solid var(--border-color, #ccc); border-radius: 999px; overflow: hidden; flex-shrink: 0; }
