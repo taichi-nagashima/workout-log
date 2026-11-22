@@ -1201,6 +1201,7 @@
         html[data-theme="senior"] .stats-grid { grid-template-columns: 1fr; }
         html[data-theme="senior"] #tab-master .search-row { display: none !important; }
         html[data-theme="senior"] button[onclick="deleteCurrentModalExercise()"] { display: none !important; }
+        html[data-theme="senior"] #renameExCard { display: none !important; }
         html[data-theme="senior"] #recSettingsBlock { display: none !important; }
         html[data-theme="senior"] button[onclick="adjustWeight(-10)"] { display: none !important; }
         html[data-theme="senior"] button[onclick="adjustWeight(10)"] { display: none !important; }
@@ -1843,6 +1844,15 @@
             <div class="card">
                 <span class="section-label">過去の全履歴 (編集・削除可能)</span>
                 <div id="modalHistoryList" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;"></div>
+            </div>
+
+            <div class="card" id="renameExCard">
+                <span class="section-label">✏️ 種目名の変更</span>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    <input id="renameExInput" type="text" style="flex:1; min-width:0; box-sizing:border-box; border:1.5px solid var(--border); border-radius:10px; background:var(--card-bg); color:var(--text-main); padding:11px; font-size:0.95rem;">
+                    <button class="action-icon-btn accent" style="padding:11px 16px; font-weight:bold; flex-shrink:0;" onclick="renameCurrentExercise()">変更する</button>
+                </div>
+                <div style="font-size:0.78rem; color:var(--text-sub); margin-top:8px; line-height:1.6;">名前を変えても、過去の記録・ルーティン・メモはすべて新しい名前で引き継がれます（記録は消えません）。</div>
             </div>
 
             <button class="action-icon-btn danger" style="width:100%; padding:12px; font-weight:bold;" onclick="deleteCurrentModalExercise()">
@@ -2579,6 +2589,9 @@
             'ローイングエルゴメーター': '脚で押す→体幹→腕で引く順序。背中を丸めずに引く。'
         };
         const EX_MEMO_KEY = 'workout_ex_memo_v1';
+        const EX_ALIAS_KEY = 'workout_ex_alias_v1';
+        function loadExAliases() { try { return JSON.parse(localStorage.getItem(EX_ALIAS_KEY)) || {}; } catch (e) { return {}; } }
+        function guideNameFor(name) { const a = loadExAliases(); return a[name] || name; }
         function loadExMemos() { try { return JSON.parse(localStorage.getItem(EX_MEMO_KEY)) || {}; } catch (e) { return {}; } }
         function saveExMemo() {
             const ta = document.getElementById('exMemoInput');
@@ -2591,9 +2604,10 @@
             const body = document.getElementById('exGuideBody');
             if (body) {
                 const ex = defaultExercises.find(e => e.name === exName);
-                const tip = EX_GUIDE[exName];
+                const gName = guideNameFor(exName);
+                const tip = EX_GUIDE[gName];
                 body.innerHTML = animHtml(exName) + (ex ? muscleMapSvg(ex) : '') +
-                    `<div style="margin-bottom:4px;">効く部位: <b>${EX_MUSCLE[exName] || (ex ? ex.category : '')}</b>${ex ? ' ／ 器具: ' + ex.type : ''}</div>` +
+                    `<div style="margin-bottom:4px;">効く部位: <b>${EX_MUSCLE[gName] || (ex ? ex.category : '')}</b>${ex ? ' ／ 器具: ' + ex.type : ''}</div>` +
                     (tip ? `<div><b>やり方のコツ:</b> ${tip}</div>` : '<div style="color:var(--text-sub);">この種目のガイドは準備中です。</div>') + howtoHtml(exName);
             }
             const ta = document.getElementById('exMemoInput');
@@ -4774,13 +4788,13 @@
             ]
 };
         function howtoHtml(exName) {
-            const steps = EX_HOWTO[exName];
+            const steps = EX_HOWTO[guideNameFor(exName)];
             if (!steps) return '';
             const lis = steps.map(s => `<li><b>${s[0]}:</b> ${s[1]}</li>`).join('');
             return `<div class="howto-block"><div class="howto-title">📖 やり方</div><ol class="howto-steps">${lis}</ol></div>`;
         }
         function animHtml(exName) {
-            const id = EX_ANIM[exName];
+            const id = EX_ANIM[guideNameFor(exName)];
             if (!id) return '';
             return `<div class="ex-anim-wrap"><img class="ex-anim-img" src="${EX_ANIM_BASE}${id}.gif" alt="${exName}のフォームアニメーション"><div class="ex-anim-caption">フォームアニメーション（出典: ExerciseDB）</div></div>`;
         }
@@ -4889,7 +4903,7 @@
             const sel = document.getElementById('exerciseSelect');
             const ex = sel ? defaultExercises.find(e => e.name === sel.value) : null;
             if (!ex) { el.innerText = ''; return; }
-            el.innerText = `🎯 効く部位: ${EX_MUSCLE[ex.name] || ex.category} ／ 器具: ${ex.type}`;
+            el.innerText = `🎯 効く部位: ${EX_MUSCLE[guideNameFor(ex.name)] || ex.category} ／ 器具: ${ex.type}`;
         }
 
         function currentTheme() { return document.documentElement.getAttribute('data-theme') || 'editorial'; }
@@ -6985,6 +6999,36 @@
             showToast(`🗑️ 「${currentDetailExName}」を削除しました`);
         }
 
+        function renameCurrentExercise() {
+            const oldName = currentDetailExName;
+            if (!oldName) return;
+            const input = document.getElementById('renameExInput');
+            const newName = input ? (input.value || '').trim() : '';
+            if (!newName) { showToast('新しい名前を入力してください'); return; }
+            if (newName === oldName) { showToast('名前が同じです'); return; }
+            if (defaultExercises.some(e => e.name === newName)) { showToast('同じ名前の種目がすでにあります'); return; }
+            const exObj = defaultExercises.find(e => e.name === oldName);
+            if (!exObj) return;
+            const sel = document.getElementById('exerciseSelect');
+            const wasSelected = sel && sel.value === oldName;
+            exObj.name = newName;
+            let cnt = 0;
+            Object.keys(workoutLogs).forEach(d => (workoutLogs[d] || []).forEach(s => { if (s.exerciseName === oldName) { s.exerciseName = newName; cnt++; } }));
+            persistLogs();
+            saveExercisesToStorage();
+            try { const rs = loadRoutines(); let ch = false; rs.forEach(r => (r.items || []).forEach(it => { if (it.name === oldName) { it.name = newName; ch = true; } })); if (ch) saveRoutines(rs); } catch (e) {}
+            try { const m = loadRpeMap(); const nm = {}; Object.keys(m).forEach(k => { const p = k.split('|'); if (p[1] === oldName) p[1] = newName; nm[p.join('|')] = m[k]; }); localStorage.setItem(RPE_KEY, JSON.stringify(nm)); } catch (e) {}
+            try { const m = loadExMemos(); if (Object.prototype.hasOwnProperty.call(m, oldName)) { m[newName] = m[oldName]; delete m[oldName]; localStorage.setItem(EX_MEMO_KEY, JSON.stringify(m)); } } catch (e) {}
+            try { const a = loadExAliases(); const origName = a[oldName] || oldName; if (origName !== newName) a[newName] = origName; delete a[oldName]; localStorage.setItem(EX_ALIAS_KEY, JSON.stringify(a)); } catch (e) {}
+            currentDetailExName = newName;
+            updateExerciseDropdown();
+            if (wasSelected && sel) { sel.value = newName; }
+            onExerciseChange();
+            renderMasterList();
+            openExerciseDetail(newName);
+            showToast(`✏️ 「${oldName}」→「${newName}」に変更しました（記録${cnt}件も移行）`);
+        }
+
         function openCurrentExerciseChart() {
             const exName = document.getElementById('exerciseSelect').value;
             if (exName) openExerciseDetail(exName);
@@ -7001,6 +7045,7 @@
             currentDetailExName = exName;
             const exObj = defaultExercises.find(e => e.name === exName);
             document.getElementById('modalExTitle').innerText = exName;
+            const renameInputEl = document.getElementById('renameExInput'); if (renameInputEl) renameInputEl.value = exName;
             document.getElementById('modalExSubMeta').innerText = exObj ? `${exObj.category} · ${exObj.type}` : '';
             const wConv = (v) => (exObj && exObj.category === '有酸素') ? v : dispW(v);
             const wLbl = (exObj && exObj.category === '有酸素') ? 'kg' : wUnitPref();
